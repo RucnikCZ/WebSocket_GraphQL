@@ -1,0 +1,36 @@
+{
+  "name": "Speedlo GraphQL Schema",
+  "schemaPath": "schema.json",
+  "extensions": {
+    "endpoints": {
+      "DEV GraphQL Endpoint": {
+        "url": "https://app.dev.speedlo.cloud/graphql",
+        "headers": {
+          "user-agent": "JS GraphQL",
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyNCwiYXV0aGVudGljYXRpb25fdG9rZW4iOm51bGwsImlhdCI6MTc0MzAwNjIxLCJqdGkiOiJhNjBlOGIxYzM2ODk5YTc0MjU0NjZjYjU5MWUwMjU2YyJ9.oq54sW1W9osv_jUSjMkwd8lgDGgG921fAig9Hx76yr4"
+        },
+        "subscription": {
+          "url": "wss://be.dev.admin.c2e.deep-vision.cloud/cable",
+          "connectionParams": {
+            "token": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyNCwiYXV0aGVudGljYXRpb25fdG9rZW4iOm51bGwsImlhdCI6ODAxNzQxMzUsImp0aSI6IjljZTYwZWJiYjk4OTQ1MGE3MTNjYzUxM2RiODU5ODM1In0.s2MSwqEmAZO-CiUfHTmKz-rej2m6g8t6wD_8pekyK9E"
+          }
+        },
+        "introspect": false
+      },
+      "PROD GraphQL Endpoint": {
+        "url": "https://c2e-p1.deep-vision.cloud/graphql",
+        "headers": {
+          "user-agent": "JS GraphQL",
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo4MDQsImF1dGhlbnRpY2F0aW9uX3Rva2VuIjoiRlFycFRpZHM4a3V3Nmtka1hPZ2Jkd3R0IiwiaWF0IjoxMjMxNTA3NjgsImp0aSI6IjE1ZDVjYTMzZmQ0ZjUwZmYzMWQ3YzkwYjIxZmM5ZmE5In0.OqRB_8YOd9jjf7asJZzyPuZjCEYnHiGSFbzhfFNBc2g"
+        },
+        "subscription": {
+          "url": "wss://c2e-p1.deep-vision.cloud/cable",
+          "connectionParams": {
+            "token": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo4MDQsImF1dGhlbnRpY2F0aW9uX3Rva2VuIjoiRlFycFRpZHM4a3V3Nmtka1hPZ2Jkd3R0IiwiaWF0IjoxMjMxNTA3NjgsImp0aSI6IjE1ZDVjYTMzZmQ0ZjUwZmYzMWQ3YzkwYjIxZmM5ZmE5In0.OqRB_8YOd9jjf7asJZzyPuZjCEYnHiGSFbzhfFNBc2g"
+          }
+        },
+        "introspect": true
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+subscription UpdatedOrderCount($branches: [ID!]!,$categories:[OrderStateCategoryEnum!]!) {
+    updatedOrderCategoryCount(companyBranches: $branches,orderStateCategories:$categories) {
+        newOrderStateCategory
+        order{
+            id
+            coveringOrders{
+                id
+            }
+            orderStates{
+                enum
+            }
+        }
+    }
+}

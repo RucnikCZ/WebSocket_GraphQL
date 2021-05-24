@@ -1,0 +1,47 @@
+subscription UpdatedKitchenRecipes($branches: [ID!]!,$sectors:[ID!]!,$categories:[OrderRecipeStateEnum!]!) {
+    updatedSectorRecipe(companyBranches: $branches,sectors: $sectors,sectorsWithChildren:true,orderRecipeStateOR: $categories) {
+        id
+        actionType
+        sectorRecipe{
+            createdBy{
+                id
+            }
+            canceledBy{
+                id
+            }
+            orderRecipeState{
+                id
+                enum
+                code
+                rawCode
+            }
+
+            id
+            sector{
+                id
+            }
+            recipe{
+                wareCategories{
+                    nameLabel
+                }
+                id
+                price{
+                    currency{
+                        id
+                    }
+                }
+            }
+            note
+            sideDishes{
+                recipe{
+                    price{
+                        currency{
+                            id
+                        }
+                    }
+                    id
+                }
+            }
+        }
+    }
+}
