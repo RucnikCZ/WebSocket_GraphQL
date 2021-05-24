@@ -1,4 +1,4 @@
-package com.example.websockettest;
+package cz.deepvision.websocket.grahpql;
 
 public interface WebSocketCallback<T> {
     void recievedCallBack(T result, SubscriptionType type);

@@ -1,4 +1,4 @@
-package com.example.websockettest;
+package cz.deepvision.websocket.grahpql;
 
 import android.util.Log;
 
@@ -25,18 +25,20 @@ import java.util.TimerTask;
 import java.util.UUID;
 
 public class WebSocketGraphQL {
-    private static String TAG = "WebSocket_Connection";
     private final int TIMEOUT = 4000;
     private final int RECONNECT_TIME = 6000;
-    private Timer timer = new Timer();
-    private ArrayList<VariablesContainer> operationsContainer;
-    private WebSocketCallback actionCallback;
-    private String token, wssUrl;
-    private Gson gson;
-    private String appTag;
+    private final ArrayList<VariablesContainer> operationsContainer;
+    private final WebSocketCallback actionCallback;
+    private final String token;
+    private final String wssUrl;
+    private final Gson gson;
+    private final String appTag;
 
-    private Boolean log;
-    private Boolean automaticReconnect;
+    private Timer timer = new Timer();
+    private WebSocket ws = null;
+
+    private final Boolean log;
+    private final Boolean automaticReconnect;
     private Boolean isWebSocketInitialized = false;
 
 
@@ -84,13 +86,13 @@ public class WebSocketGraphQL {
     public void setupWebSocket() {
         WebSocketFactory webSocketFactory = new WebSocketFactory();
         try {
-            WebSocket ws = webSocketFactory.createSocket(wssUrl + token, TIMEOUT);
+            ws = webSocketFactory.createSocket(wssUrl + token, TIMEOUT);
             ws.addListener(new WebSocketAdapter() {
                 @Override
                 public void onStateChanged(WebSocket websocket, WebSocketState newState) throws Exception {
                     super.onStateChanged(websocket, newState);
                     if (log)
-                        Log.d(TAG, "State changed: " + newState.name());
+                        Log.d(appTag, "State changed: " + newState.name());
 
                     if (newState == WebSocketState.CLOSED) {
                         if (automaticReconnect) {
@@ -100,7 +102,7 @@ public class WebSocketGraphQL {
                                 @Override
                                 public void run() {
                                     try {
-                                        websocket.recreate(TIMEOUT).connect();
+                                        ws = websocket.recreate(TIMEOUT).connect();
                                         if (timer != null) {
                                             timer.cancel();
                                             timer.purge();
@@ -128,7 +130,7 @@ public class WebSocketGraphQL {
                     actionCallback.connectedCallBack();
                     initWebSocket(websocket);
                     if (log)
-                        Log.d(TAG, "Connected");
+                        Log.d(appTag, "Connected");
 
                 }
 
@@ -136,10 +138,10 @@ public class WebSocketGraphQL {
                 public void onTextMessage(WebSocket websocket, String text) throws Exception {
                     super.onTextMessage(websocket, text);
                     if (text.contains("ping")) {
-                        if (log) Log.d(TAG, "Ping response: " + text);
+                        if (log) Log.d(appTag, "Ping response: " + text);
                         if (automaticReconnect) CustomTimer.getInstance().checkTimer(websocket, RECONNECT_TIME);
                     } else {
-                        if (log) Log.d(TAG, text);
+                        if (log) Log.d(appTag, text);
                     }
                     if ((gson.fromJson(text, JsonObject.class).getAsJsonObject("message") != null) &&
                             ((gson.fromJson(text, JsonObject.class).getAsJsonObject("message").getAsJsonObject("result") != null)) &&
@@ -150,7 +152,7 @@ public class WebSocketGraphQL {
                                 Object result = gson.fromJson(data, Class.forName(variablesContainer.getSubscriptionDataClassName()));
                                 actionCallback.recievedCallBack(result, variablesContainer.getSubscriptionType());
                             } catch (Exception e) {
-                                Log.e(TAG, e.getLocalizedMessage());
+                                Log.e(appTag, e.getLocalizedMessage());
                             }
                         }
 
@@ -161,7 +163,7 @@ public class WebSocketGraphQL {
                 public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) throws
                         Exception {
                     super.onDisconnected(websocket, serverCloseFrame, clientCloseFrame, closedByServer);
-                    if (log) Log.d(TAG, "Disconnected");
+                    if (log) Log.i(appTag, "Disconnected");
                     actionCallback.disconnectedCallBack();
                 }
             }).addProtocol("actioncable-v1-json");
@@ -178,17 +180,23 @@ public class WebSocketGraphQL {
             e.printStackTrace();
             actionCallback.disconnectedCallBack();
         }
+    }
 
+    public void unSubscribe(String reason) {
+        if (ws != null) {
+            if (log) Log.i(appTag, reason);
+            ws.disconnect(reason);
+        }
     }
 
     private synchronized void initWebSocket(WebSocket ws) throws JSONException, InterruptedException {
         if (!isWebSocketInitialized) {
-            Log.d(TAG, "Web socket init");
+            Log.d(appTag, "Web socket init");
 
-                String identifier = UUID.randomUUID().toString();
-                String openChannelString = "{\"command\":\"subscribe\",\"identifier\":\"{\\\"channel\\\":\\\"GraphqlChannel\\\",\\\"channelId\\\":\\\"" + identifier + "\\\"}\"}";
-                JSONObject openChannelJson = new JSONObject(openChannelString);
-                ws.sendText(openChannelJson.toString());
+            String identifier = UUID.randomUUID().toString();
+            String openChannelString = "{\"command\":\"subscribe\",\"identifier\":\"{\\\"channel\\\":\\\"GraphqlChannel\\\",\\\"channelId\\\":\\\"" + identifier + "\\\"}\"}";
+            JSONObject openChannelJson = new JSONObject(openChannelString);
+            ws.sendText(openChannelJson.toString());
             for (VariablesContainer variablesContainer : operationsContainer) {
 
                 Thread.sleep(5000);
@@ -198,7 +206,7 @@ public class WebSocketGraphQL {
         }
     }
 
-    public String generateJsonStructure(String query, JsonObject variables, String uuid) {
+    private String generateJsonStructure(String query, JsonObject variables, String uuid) {
         JsonObject base = new JsonObject();
         base.addProperty("command", "message");
 

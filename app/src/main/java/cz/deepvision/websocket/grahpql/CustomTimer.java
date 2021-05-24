@@ -1,6 +1,4 @@
-package com.example.websockettest;
-
-import android.util.Log;
+package cz.deepvision.websocket.grahpql;
 
 import com.neovisionaries.ws.client.WebSocket;
 
@@ -8,16 +6,16 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class CustomTimer {
-    private static CustomTimer timerSingleton;
-    private Timer timer = new Timer();
+     protected static CustomTimer timerSingleton;
+     protected Timer timer = new Timer();
 
-    public static CustomTimer getInstance() {
+     protected static CustomTimer getInstance() {
         if (timerSingleton == null)
             timerSingleton = new CustomTimer();
         return timerSingleton;
     }
 
-    public void checkTimer(WebSocket ws, int RECONNECT_TIME) {
+    protected void checkTimer(WebSocket ws, int RECONNECT_TIME) {
         if(timer != null) timer.cancel();
         timer = new Timer();
         timer.schedule(new TimerTask() {

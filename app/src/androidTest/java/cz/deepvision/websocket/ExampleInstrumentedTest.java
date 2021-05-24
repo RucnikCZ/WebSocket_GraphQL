@@ -1,4 +1,4 @@
-package com.example.websockettest;
+package cz.deepvision.websocket;
 
 import android.content.Context;
 
