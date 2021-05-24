@@ -198,9 +198,9 @@ public class WebSocketGraphQL {
             JSONObject openChannelJson = new JSONObject(openChannelString);
             ws.sendText(openChannelJson.toString());
             for (VariablesContainer variablesContainer : operationsContainer) {
-
-                Thread.sleep(5000);
                 ws.sendText(generateJsonStructure(variablesContainer.getGraphqlQuery(), variablesContainer.getVariables(), identifier));
+                Thread.sleep(10000);
+
             }
             isWebSocketInitialized = true;
         }
