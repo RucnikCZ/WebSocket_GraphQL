@@ -28,7 +28,7 @@ public class WebSocketGraphQL {
     private final int TIMEOUT = 4000;
     private final int RECONNECT_TIME = 6000;
     private final ArrayList<VariablesContainer> operationsContainer;
-    private final WebSocketCallback actionCallback;
+    private final WebSocketCallback<Object> actionCallback;
     private final String token;
     private final String wssUrl;
     private final Gson gson;
@@ -51,7 +51,7 @@ public class WebSocketGraphQL {
      * @param log                Enables/disables logging trought library
      * @param automaticReconnect Set true, to allow automatic reconnection after connection lost, or long ping interval
      */
-    public WebSocketGraphQL(String token, String wssUrl, JsonObject[] variables, WebSocketCallback callback, HashMap<SubscriptionType, Class<?>> operations, String appTag, boolean log, boolean automaticReconnect) {
+    public WebSocketGraphQL(String token, String wssUrl, JsonObject[] variables, WebSocketCallback<Object> callback, HashMap<SubscriptionType, Class<?>> operations, String appTag, boolean log, boolean automaticReconnect) {
         this.token = token;
         this.wssUrl = wssUrl;
         this.actionCallback = callback;
@@ -177,7 +177,7 @@ public class WebSocketGraphQL {
 
             initWebSocket(ws);
 
-        } catch (IOException | WebSocketException | JSONException | InterruptedException e) {
+        } catch (IOException | WebSocketException | JSONException e) {
             e.printStackTrace();
             actionCallback.disconnectedCallBack();
         }
@@ -190,7 +190,7 @@ public class WebSocketGraphQL {
         }
     }
 
-    private synchronized void initWebSocket(WebSocket ws) throws JSONException, InterruptedException {
+    private synchronized void initWebSocket(WebSocket ws) throws JSONException {
         if (!isWebSocketInitialized) {
             Log.d(appTag, "Web socket init");
 
@@ -200,7 +200,6 @@ public class WebSocketGraphQL {
             ws.sendText(openChannelJson.toString());
             for (VariablesContainer variablesContainer : operationsContainer) {
                 ws.sendText(generateJsonStructure(variablesContainer.getGraphqlQuery(), variablesContainer.getVariables(), identifier));
-                Thread.sleep(3000);
             }
             isWebSocketInitialized = true;
         }
