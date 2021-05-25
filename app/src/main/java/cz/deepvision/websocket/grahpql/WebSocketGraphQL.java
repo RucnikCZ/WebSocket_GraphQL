@@ -113,6 +113,7 @@ public class WebSocketGraphQL {
                                     }
                                 }
                             }, RECONNECT_TIME);
+                            isWebSocketInitialized = false;
                         }
                     }
                     if (newState == WebSocketState.OPEN) {
