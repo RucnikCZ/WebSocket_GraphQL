@@ -200,8 +200,7 @@ public class WebSocketGraphQL {
             ws.sendText(openChannelJson.toString());
             for (VariablesContainer variablesContainer : operationsContainer) {
                 ws.sendText(generateJsonStructure(variablesContainer.getGraphqlQuery(), variablesContainer.getVariables(), identifier));
-                Thread.sleep(10000);
-
+                Thread.sleep(3000);
             }
             isWebSocketInitialized = true;
         }
