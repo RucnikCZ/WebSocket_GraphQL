@@ -25,8 +25,8 @@ import java.util.TimerTask;
 import java.util.UUID;
 
 public class WebSocketGraphQL {
-    private final int TIMEOUT = 4000;
-    private final int RECONNECT_TIME = 6000;
+    private final int TIMEOUT = 6000;
+    private final int RECONNECT_TIME = 8000;
     private final ArrayList<VariablesContainer> operationsContainer;
     private final WebSocketCallback<Object> actionCallback;
     private final String token;
