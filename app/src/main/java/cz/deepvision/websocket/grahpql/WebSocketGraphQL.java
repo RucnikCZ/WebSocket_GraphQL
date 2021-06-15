@@ -38,7 +38,7 @@ public class WebSocketGraphQL {
     private WebSocket ws = null;
 
     private final Boolean log;
-    private final Boolean automaticReconnect;
+    private Boolean automaticReconnect;
     private Boolean isWebSocketInitialized = false;
 
 
@@ -186,6 +186,7 @@ public class WebSocketGraphQL {
     public void unSubscribe(String reason) {
         if (ws != null) {
             if (log) Log.i(appTag, reason);
+            automaticReconnect = false;
             ws.disconnect(reason);
         }
     }
