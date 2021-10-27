@@ -177,7 +177,7 @@ public class WebSocketGraphQL {
 
             initWebSocket(ws);
 
-        } catch (IOException | WebSocketException | JSONException e) {
+        } catch (IOException | WebSocketException | JSONException | InterruptedException e) {
             e.printStackTrace();
             actionCallback.disconnectedCallBack();
         }
@@ -191,7 +191,7 @@ public class WebSocketGraphQL {
         }
     }
 
-    private synchronized void initWebSocket(WebSocket ws) throws JSONException {
+    private synchronized void initWebSocket(WebSocket ws) throws JSONException, InterruptedException {
         if (!isWebSocketInitialized) {
             Log.d(appTag, "Web socket init");
 
@@ -199,6 +199,7 @@ public class WebSocketGraphQL {
             String openChannelString = "{\"command\":\"subscribe\",\"identifier\":\"{\\\"channel\\\":\\\"GraphqlChannel\\\",\\\"channelId\\\":\\\"" + identifier + "\\\"}\"}";
             JSONObject openChannelJson = new JSONObject(openChannelString);
             ws.sendText(openChannelJson.toString());
+            Thread.sleep(3000);
             for (VariablesContainer variablesContainer : operationsContainer) {
                 ws.sendText(generateJsonStructure(variablesContainer.getGraphqlQuery(), variablesContainer.getVariables(), identifier));
             }
