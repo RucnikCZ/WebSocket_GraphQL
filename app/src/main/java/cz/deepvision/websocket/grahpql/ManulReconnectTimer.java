@@ -8,8 +8,8 @@ import java.util.TimerTask;
 public class ManulReconnectTimer {
      protected static ManulReconnectTimer timerSingleton;
      protected Timer timer = new Timer();
-     // 50 min
-     private final int MANUAL_TIME = 3000000;
+     // 50 min 3 000 000
+     private final int MANUAL_TIME = 60000;
 
     protected static ManulReconnectTimer getInstance() {
         if (timerSingleton == null)
