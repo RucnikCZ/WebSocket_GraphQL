@@ -129,6 +129,8 @@ public class WebSocketGraphQL {
                 public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws Exception {
                     super.onConnected(websocket, headers);
                     actionCallback.connectedCallBack();
+                    // Po každém připojení spustí timer na 50 minut a poté se sama reconnectí
+                    ManulReconnectTimer.getInstance().checkTimer(websocket);
                     initWebSocket(websocket);
                     if (log)
                         Log.d(appTag, "Connected");
@@ -140,7 +142,8 @@ public class WebSocketGraphQL {
                     super.onTextMessage(websocket, text);
                     if (text.contains("ping")) {
                         if (log) Log.d(appTag, "Ping response: " + text);
-                        if (automaticReconnect) CustomTimer.getInstance().checkTimer(websocket, RECONNECT_TIME);
+                        if (automaticReconnect)
+                            CustomTimer.getInstance().checkTimer(websocket, RECONNECT_TIME);
                     } else {
                         if (log) Log.d(appTag, text);
                     }
@@ -164,7 +167,11 @@ public class WebSocketGraphQL {
                 public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) throws
                         Exception {
                     super.onDisconnected(websocket, serverCloseFrame, clientCloseFrame, closedByServer);
-                    if (log) Log.i(appTag, "Disconnected");
+                    if (log) {
+                        Log.i(appTag, "Disconnected");
+                        Log.i(appTag, "Disconnected by server: " + closedByServer);
+                        Log.i(appTag, "Disconnected because: " + clientCloseFrame.getCloseReason());
+                    }
                     actionCallback.disconnectedCallBack();
                 }
             }).addProtocol("actioncable-v1-json");
