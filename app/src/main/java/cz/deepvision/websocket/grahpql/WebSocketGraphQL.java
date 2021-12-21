@@ -185,8 +185,8 @@ public class WebSocketGraphQL {
             initWebSocket(ws);
 
         } catch (IOException | WebSocketException | JSONException | InterruptedException e) {
-            e.printStackTrace();
             actionCallback.disconnectedCallBack("Initialization of WebSocket did not went well, error: "+ e.getLocalizedMessage());
+            e.printStackTrace();
         }
     }
 
