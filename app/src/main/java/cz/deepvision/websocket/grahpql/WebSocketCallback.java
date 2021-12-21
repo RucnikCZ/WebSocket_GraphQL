@@ -5,5 +5,5 @@ public interface WebSocketCallback<T> {
 
     void connectedCallBack();
 
-    void disconnectedCallBack();
+    void disconnectedCallBack(String reason);
 }

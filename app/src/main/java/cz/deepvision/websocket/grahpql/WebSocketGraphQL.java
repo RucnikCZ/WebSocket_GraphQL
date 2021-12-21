@@ -172,7 +172,7 @@ public class WebSocketGraphQL {
                         Log.i(appTag, "Disconnected by server: " + closedByServer);
                         Log.i(appTag, "Disconnected because: " + clientCloseFrame.getCloseReason());
                     }
-                    actionCallback.disconnectedCallBack();
+                    actionCallback.disconnectedCallBack(clientCloseFrame.getCloseReason());
                 }
             }).addProtocol("actioncable-v1-json");
 
@@ -186,7 +186,7 @@ public class WebSocketGraphQL {
 
         } catch (IOException | WebSocketException | JSONException | InterruptedException e) {
             e.printStackTrace();
-            actionCallback.disconnectedCallBack();
+            actionCallback.disconnectedCallBack("Initialization of WebSocket did not went well, error: "+ e.getLocalizedMessage());
         }
     }
 
