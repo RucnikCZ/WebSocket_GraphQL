@@ -206,7 +206,7 @@ public class WebSocketGraphQL {
             String openChannelString = "{\"command\":\"subscribe\",\"identifier\":\"{\\\"channel\\\":\\\"GraphqlChannel\\\",\\\"channelId\\\":\\\"" + identifier + "\\\"}\"}";
             JSONObject openChannelJson = new JSONObject(openChannelString);
             ws.sendText(openChannelJson.toString());
-            Thread.sleep(3000);
+            Thread.sleep(6000);
             for (VariablesContainer variablesContainer : operationsContainer) {
                 ws.sendText(generateJsonStructure(variablesContainer.getGraphqlQuery(), variablesContainer.getVariables(), identifier));
             }
