@@ -17,6 +17,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ public class WebSocketGraphQL {
     private final String appTag;
 
     private Timer timer = new Timer();
+    private Timer startCommandTimer = new Timer();
     private WebSocket ws = null;
 
     private final Boolean log;
@@ -204,13 +206,28 @@ public class WebSocketGraphQL {
 
             String identifier = UUID.randomUUID().toString();
             String openChannelString = "{\"command\":\"subscribe\",\"identifier\":\"{\\\"channel\\\":\\\"GraphqlChannel\\\",\\\"channelId\\\":\\\"" + identifier + "\\\"}\"}";
+            Log.d(appTag,"Open channel command : " + openChannelString);
             JSONObject openChannelJson = new JSONObject(openChannelString);
             ws.sendText(openChannelJson.toString());
-            Thread.sleep(6000);
-            for (VariablesContainer variablesContainer : operationsContainer) {
-                ws.sendText(generateJsonStructure(variablesContainer.getGraphqlQuery(), variablesContainer.getVariables(), identifier));
-            }
-            isWebSocketInitialized = true;
+
+            startCommandTimer = new Timer();
+            startCommandTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if (startCommandTimer != null) {
+                        startCommandTimer.cancel();
+                        startCommandTimer.purge();
+                        startCommandTimer = null;
+                    }
+
+                    for (VariablesContainer variablesContainer : operationsContainer) {
+                        ws.sendText(generateJsonStructure(variablesContainer.getGraphqlQuery(), variablesContainer.getVariables(), identifier));
+                        Log.d(appTag,"Command sent" + generateJsonStructure(variablesContainer.getGraphqlQuery(), variablesContainer.getVariables(), identifier));
+                    }
+                    isWebSocketInitialized = true;
+                }
+            },5000);
+
         }
     }
 
